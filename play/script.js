@@ -1,3 +1,5 @@
+import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
+
 const board = [
   { name: 'Départ', type: 'start' },
   { name: 'Medina', type: 'property', price: 140, rent: 20 },
@@ -21,6 +23,13 @@ const START_BONUS = 200;
 const MAX_TURNS = 50;
 const MIN_RESERVE_BALANCE = 200;
 const DICE_SIDES = 6;
+const PATH_HALF_SIZE = 4;
+const CAMERA_POSITION = { x: 0, y: 12, z: 11.5 };
+const BOARD_ROTATION_SPEED = 0.0018;
+const DICE_ROTATION_MULTIPLIER = { x: 0.45, y: 0.65, z: 0.38 };
+const TOKEN_Y_POSITION = 0.75;
+const DICE_SIZE = 1;
+const DICE_Y_POSITION = 1.1;
 
 const initialPlayers = () => [
   { id: 'a', name: 'Joueur A', money: 1500, pos: 0, properties: [] },
@@ -32,14 +41,29 @@ let turn = 0;
 let turnsPlayed = 0;
 let owners = Array(board.length).fill(null);
 let gameOver = false;
+let lastDiceRoll = null;
 
-const boardEl = document.getElementById('board');
 const playerAEl = document.getElementById('playerA');
 const playerBEl = document.getElementById('playerB');
 const statusEl = document.getElementById('status');
 const logEl = document.getElementById('log');
 const rollBtn = document.getElementById('rollBtn');
 const restartBtn = document.getElementById('restartBtn');
+const sceneHostEl = document.getElementById('scene3d');
+const overlayTurnEl = document.getElementById('overlayTurn');
+const overlayDiceEl = document.getElementById('overlayDice');
+const overlayTileEl = document.getElementById('overlayTile');
+const overlayMoneyEl = document.getElementById('overlayMoney');
+
+const sceneState = {
+  scene: null,
+  camera: null,
+  renderer: null,
+  boardGroup: null,
+  playerMeshes: {},
+  diceMesh: null,
+  tilePositions: []
+};
 
 function log(message) {
   const li = document.createElement('li');
@@ -60,63 +84,155 @@ function renderPlayers() {
   playerBEl.innerHTML = `<strong>${players[1].name}</strong><br>Argent: ${formatMoney(players[1].money)}<br>Terrains: ${players[1].properties.length}`;
 }
 
-function tileClass(type) {
-  if (type === 'property') return 'property';
-  if (type === 'tax') return 'tax';
-  if (type === 'chance') return 'chance';
-  if (type === 'start') return 'start';
-  return 'special';
+function tileHeight(tile) {
+  if (tile.type === 'start') return 0.45;
+  if (tile.type === 'property') return 0.35;
+  if (tile.type === 'chance') return 0.3;
+  if (tile.type === 'tax') return 0.28;
+  return 0.32;
 }
 
-function getTileMeta(tile, index) {
-  if (tile.type === 'property') {
-    const owner = owners[index];
-    const ownerText = owner === null ? 'Libre' : `Propriétaire: ${players[owner].name}`;
-    return `Prix: ${formatMoney(tile.price)} | Loyer: ${formatMoney(tile.rent)} | ${ownerText}`;
-  }
-
-  if (tile.type === 'tax') {
-    return `Taxe: ${formatMoney(tile.amount)}`;
-  }
-
-  if (tile.type === 'special') {
-    return `Bonus: ${formatMoney(tile.amount)}`;
-  }
-
-  if (tile.type === 'chance') {
-    return 'Carte aléatoire';
-  }
-
-  return `Passe = +${formatMoney(START_BONUS)}`;
+function tileColor(tile) {
+  if (tile.type === 'start') return 0x3fb950;
+  if (tile.type === 'property') return 0x1f6feb;
+  if (tile.type === 'chance') return 0xd29922;
+  if (tile.type === 'tax') return 0xf85149;
+  return 0xa371f7;
 }
 
-function renderBoard() {
-  boardEl.innerHTML = '';
-  board.forEach((tile, index) => {
-    const cell = document.createElement('div');
-    cell.className = `tile ${tileClass(tile.type)}`;
+function boardPathPosition(index) {
+  const max = PATH_HALF_SIZE;
+  const min = -PATH_HALF_SIZE;
 
-    cell.innerHTML = `
-      <div>
-        <strong>${index}. ${tile.name}</strong>
-        <div class="price">${getTileMeta(tile, index)}</div>
-      </div>
-    `;
+  if (index <= 4) {
+    return new THREE.Vector3(min + index * 2, 0, max);
+  }
 
-    const tokens = document.createElement('div');
-    tokens.className = 'tokens';
+  if (index <= 7) {
+    return new THREE.Vector3(max, 0, max - (index - 4) * 2);
+  }
 
-    players.forEach((player) => {
-      if (player.pos === index) {
-        const t = document.createElement('span');
-        t.className = `token ${player.id}`;
-        tokens.appendChild(t);
-      }
-    });
+  if (index <= 12) {
+    return new THREE.Vector3(max - (index - 8) * 2, 0, min);
+  }
 
-    cell.appendChild(tokens);
-    boardEl.appendChild(cell);
+  return new THREE.Vector3(min, 0, min + (index - 12) * 2);
+}
+
+function buildBoardMesh() {
+  const group = new THREE.Group();
+  const base = new THREE.Mesh(
+    new THREE.BoxGeometry(10.5, 0.24, 10.5),
+    new THREE.MeshStandardMaterial({ color: 0x0e1723, roughness: 0.88 })
+  );
+  base.position.y = -0.22;
+  group.add(base);
+
+  sceneState.tilePositions = board.map((tile, index) => {
+    const position = boardPathPosition(index);
+    const tileMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, tileHeight(tile), 1.5),
+      new THREE.MeshStandardMaterial({ color: tileColor(tile), roughness: 0.7, metalness: 0.12 })
+    );
+    tileMesh.position.set(position.x, tileHeight(tile) / 2, position.z);
+    group.add(tileMesh);
+    return position;
   });
+
+  return group;
+}
+
+function createToken(color, initialPos) {
+  const token = new THREE.Mesh(
+    new THREE.SphereGeometry(0.36, 20, 20),
+    new THREE.MeshStandardMaterial({ color, roughness: 0.3, metalness: 0.4 })
+  );
+  token.position.set(initialPos.x, TOKEN_Y_POSITION, initialPos.z);
+  return token;
+}
+
+function initThreeScene() {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0f1622);
+
+  const camera = new THREE.PerspectiveCamera(
+    45,
+    sceneHostEl.clientWidth / sceneHostEl.clientHeight,
+    0.1,
+    100
+  );
+  camera.position.set(CAMERA_POSITION.x, CAMERA_POSITION.y, CAMERA_POSITION.z);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(sceneHostEl.clientWidth, sceneHostEl.clientHeight);
+  sceneHostEl.appendChild(renderer.domElement);
+
+  const hemi = new THREE.HemisphereLight(0xa6d2ff, 0x1f2937, 1.05);
+  scene.add(hemi);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  keyLight.position.set(8, 12, 6);
+  scene.add(keyLight);
+
+  const boardGroup = buildBoardMesh();
+  scene.add(boardGroup);
+
+  const playerA = createToken(0x58a6ff, boardPathPosition(0));
+  const playerB = createToken(0xf778ba, boardPathPosition(0));
+  playerB.position.x += 0.35;
+  scene.add(playerA, playerB);
+
+  const dice = new THREE.Mesh(
+    new THREE.BoxGeometry(DICE_SIZE, DICE_SIZE, DICE_SIZE),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.08 })
+  );
+  dice.position.set(0, DICE_Y_POSITION, 0);
+  scene.add(dice);
+
+  sceneState.scene = scene;
+  sceneState.camera = camera;
+  sceneState.renderer = renderer;
+  sceneState.boardGroup = boardGroup;
+  sceneState.playerMeshes = { a: playerA, b: playerB };
+  sceneState.diceMesh = dice;
+
+  const animate = () => {
+    sceneState.boardGroup.rotation.y += BOARD_ROTATION_SPEED;
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  };
+  animate();
+}
+
+function setTokenPosition(player, offsetX = 0) {
+  const token = sceneState.playerMeshes[player.id];
+  const tile = sceneState.tilePositions[player.pos];
+  if (!token || !tile) return;
+  token.position.set(tile.x + offsetX, TOKEN_Y_POSITION, tile.z);
+}
+
+function updateDiceMesh(value) {
+  if (!sceneState.diceMesh || value === null) return;
+  sceneState.diceMesh.rotation.set(
+    value * DICE_ROTATION_MULTIPLIER.x,
+    value * DICE_ROTATION_MULTIPLIER.y,
+    value * DICE_ROTATION_MULTIPLIER.z
+  );
+}
+
+function renderThreeState() {
+  setTokenPosition(players[0], -0.23);
+  setTokenPosition(players[1], 0.23);
+  updateDiceMesh(lastDiceRoll);
+}
+
+function renderOverlay() {
+  const current = players[turn];
+  overlayTurnEl.textContent = current.name;
+  overlayDiceEl.textContent = lastDiceRoll === null ? '-' : String(lastDiceRoll);
+  overlayTileEl.textContent = board[current.pos].name;
+  overlayMoneyEl.textContent = formatMoney(current.money);
 }
 
 function nextTurn() {
@@ -191,6 +307,7 @@ function moveCurrentPlayer() {
 
   const player = players[turn];
   const diceRoll = Math.floor(Math.random() * DICE_SIDES) + 1;
+  lastDiceRoll = diceRoll;
   const previousPos = player.pos;
   player.pos = (player.pos + diceRoll) % board.length;
 
@@ -227,7 +344,8 @@ function moveCurrentPlayer() {
   }
 
   renderPlayers();
-  renderBoard();
+  renderOverlay();
+  renderThreeState();
 }
 
 function resetGame() {
@@ -236,15 +354,27 @@ function resetGame() {
   turnsPlayed = 0;
   owners = Array(board.length).fill(null);
   gameOver = false;
+  lastDiceRoll = null;
   logEl.innerHTML = '';
   rollBtn.disabled = false;
   statusEl.textContent = `Tour de ${players[turn].name}`;
   renderPlayers();
-  renderBoard();
+  renderOverlay();
+  renderThreeState();
   log('Nouvelle partie démarrée.');
 }
 
+function onResize() {
+  if (!sceneState.camera || !sceneState.renderer) return;
+  const width = sceneHostEl.clientWidth;
+  const height = sceneHostEl.clientHeight;
+  sceneState.camera.aspect = width / height;
+  sceneState.camera.updateProjectionMatrix();
+  sceneState.renderer.setSize(width, height);
+}
+
+initThreeScene();
+window.addEventListener('resize', onResize);
 rollBtn.addEventListener('click', moveCurrentPlayer);
 restartBtn.addEventListener('click', resetGame);
-
 resetGame();

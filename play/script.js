@@ -1,4 +1,9 @@
-import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
+const THREE_MODULE_URLS = [
+  'https://unpkg.com/three@0.165.0/build/three.module.js',
+  'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js',
+  'https://esm.sh/three@0.165.0'
+];
+let THREE = null;
 
 const board = [
   { name: 'Départ', type: 'start' },
@@ -64,6 +69,23 @@ const sceneState = {
   diceMesh: null,
   tilePositions: []
 };
+
+async function loadThreeModule() {
+  for (const moduleUrl of THREE_MODULE_URLS) {
+    try {
+      return await import(moduleUrl);
+    } catch (error) {
+      console.warn(`Impossible de charger Three.js depuis ${moduleUrl}`, error);
+    }
+  }
+
+  throw new Error('Three.js n’a pu être chargé depuis aucune source.');
+}
+
+function displaySceneLoadError() {
+  statusEl.textContent = 'Impossible de charger la scène 3D pour le moment.';
+  sceneHostEl.innerHTML = '<p class="scene-load-error">Erreur de chargement Three.js.</p>';
+}
 
 function log(message) {
   const li = document.createElement('li');
@@ -373,8 +395,20 @@ function onResize() {
   sceneState.renderer.setSize(width, height);
 }
 
-initThreeScene();
-window.addEventListener('resize', onResize);
-rollBtn.addEventListener('click', moveCurrentPlayer);
-restartBtn.addEventListener('click', resetGame);
-resetGame();
+async function bootstrap() {
+  try {
+    THREE = await loadThreeModule();
+    initThreeScene();
+    window.addEventListener('resize', onResize);
+    rollBtn.addEventListener('click', moveCurrentPlayer);
+    restartBtn.addEventListener('click', resetGame);
+    resetGame();
+  } catch (error) {
+    console.error(error);
+    rollBtn.disabled = true;
+    restartBtn.disabled = true;
+    displaySceneLoadError();
+  }
+}
+
+bootstrap();

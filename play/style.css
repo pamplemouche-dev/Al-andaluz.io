@@ -93,6 +93,13 @@ button:disabled {
   display: block;
 }
 
+.scene-load-error {
+  margin: 0;
+  padding: 12px;
+  color: #f85149;
+  font-weight: 700;
+}
+
 .game-overlay {
   position: absolute;
   top: 12px;

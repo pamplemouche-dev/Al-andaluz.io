@@ -70,7 +70,7 @@ function tileClass(type) {
 function getTileMeta(tile, index) {
   if (tile.type === 'property') {
     const owner = owners[index];
-    const ownerText = owner === null ? 'Libre' : `Proprio: ${players[owner].name}`;
+    const ownerText = owner === null ? 'Libre' : `Propriétaire: ${players[owner].name}`;
     return `Prix: ${formatMoney(tile.price)} | Loyer: ${formatMoney(tile.rent)} | ${ownerText}`;
   }
 
@@ -189,23 +189,24 @@ function moveCurrentPlayer() {
   if (gameOver) return;
 
   const player = players[turn];
-  const dice = Math.floor(Math.random() * 6) + 1;
+  const diceRoll = Math.floor(Math.random() * 6) + 1;
   const previousPos = player.pos;
-  player.pos = (player.pos + dice) % board.length;
+  player.pos = (player.pos + diceRoll) % board.length;
 
   if (player.pos < previousPos) {
     player.money += START_BONUS;
     log(`${player.name} passe par Départ et gagne ${formatMoney(START_BONUS)}.`);
   }
 
-  log(`${player.name} lance ${dice} et arrive sur ${board[player.pos].name}.`);
+  log(`${player.name} lance ${diceRoll} et arrive sur ${board[player.pos].name}.`);
   handleLanding(player);
   clampMoney();
 
   const bankrupt = players.find((p) => p.money <= 0);
   if (bankrupt) {
     gameOver = true;
-    statusEl.textContent = `${bankrupt.name} est ruiné. ${players.find((p) => p !== bankrupt).name} gagne !`;
+    const winner = players[0] === bankrupt ? players[1] : players[0];
+    statusEl.textContent = `${bankrupt.name} est ruiné. ${winner.name} gagne !`;
     rollBtn.disabled = true;
   } else if (turnsPlayed >= MAX_TURNS) {
     gameOver = true;

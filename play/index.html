@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Play - Monopoly GO</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Monopoly GO - Mini Plateau</h1>
+      <p class="subtitle">Lance les dés, achète des terrains et bats ton adversaire.</p>
+
+      <section class="hud">
+        <div class="player-card" id="playerA"></div>
+        <div class="player-card" id="playerB"></div>
+      </section>
+
+      <section class="actions">
+        <button id="rollBtn">Lancer les dés</button>
+        <button id="restartBtn">Rejouer</button>
+      </section>
+
+      <section id="status" class="status"></section>
+
+      <section id="board" class="board" aria-label="Plateau de jeu"></section>
+
+      <section>
+        <h2>Journal</h2>
+        <ul id="log" class="log"></ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

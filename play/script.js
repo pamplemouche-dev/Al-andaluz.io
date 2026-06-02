@@ -66,19 +66,38 @@ function tileClass(type) {
   return 'special';
 }
 
+function getTileMeta(tile, index) {
+  if (tile.type === 'property') {
+    const owner = owners[index];
+    const ownerText = owner === null ? 'Libre' : `Proprio: ${players[owner].name}`;
+    return `Prix: ${money(tile.price)} | Loyer: ${money(tile.rent)} | ${ownerText}`;
+  }
+
+  if (tile.type === 'tax') {
+    return `Taxe: ${money(tile.amount)}`;
+  }
+
+  if (tile.type === 'special') {
+    return `Bonus: ${money(tile.amount)}`;
+  }
+
+  if (tile.type === 'chance') {
+    return 'Carte aléatoire';
+  }
+
+  return `Passe = +${money(START_BONUS)}`;
+}
+
 function renderBoard() {
   boardEl.innerHTML = '';
   board.forEach((tile, index) => {
     const cell = document.createElement('div');
     cell.className = `tile ${tileClass(tile.type)}`;
 
-    const owner = owners[index];
-    const ownerText = owner === null ? 'Libre' : `Proprio: ${players[owner].name}`;
-
     cell.innerHTML = `
       <div>
         <strong>${index}. ${tile.name}</strong>
-        <div class="price">${tile.price ? `Prix: ${money(tile.price)} | Loyer: ${money(tile.rent)}` : ownerText}</div>
+        <div class="price">${getTileMeta(tile, index)}</div>
       </div>
     `;
 
@@ -189,7 +208,12 @@ function moveCurrentPlayer() {
     rollBtn.disabled = true;
   } else if (turnsPlayed >= MAX_TURNS) {
     gameOver = true;
-    const winner = players[0].money === players[1].money ? null : players[0].money > players[1].money ? players[0] : players[1];
+    let winner = null;
+    if (players[0].money > players[1].money) {
+      winner = players[0];
+    } else if (players[1].money > players[0].money) {
+      winner = players[1];
+    }
     statusEl.textContent = winner
       ? `Fin de partie: ${winner.name} gagne avec ${money(winner.money)}.`
       : `Fin de partie: égalité parfaite.`;

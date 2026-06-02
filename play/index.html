@@ -23,7 +23,22 @@
 
       <section id="status" class="status"></section>
 
-      <section id="board" class="board" aria-label="Plateau de jeu"></section>
+      <section class="scene-shell" aria-label="Plateau de jeu 3D">
+        <div id="scene3d" class="scene3d"></div>
+        <div class="game-overlay">
+          <div class="overlay-title">MONOPOLY GO · Overlay</div>
+          <div class="overlay-grid">
+            <div>Tour</div>
+            <div id="overlayTurn">-</div>
+            <div>Dé</div>
+            <div id="overlayDice">-</div>
+            <div>Case</div>
+            <div id="overlayTile">-</div>
+            <div>Argent</div>
+            <div id="overlayMoney">-</div>
+          </div>
+        </div>
+      </section>
 
       <section>
         <h2>Journal</h2>
@@ -31,6 +46,6 @@
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

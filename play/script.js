@@ -19,6 +19,7 @@ const board = [
 
 const START_BONUS = 200;
 const MAX_TURNS = 50;
+const MIN_RESERVE_BALANCE = 200;
 
 const initialPlayers = () => [
   { id: 'a', name: 'Joueur A', money: 1500, pos: 0, properties: [] },
@@ -45,7 +46,7 @@ function log(message) {
   logEl.prepend(li);
 }
 
-function money(n) {
+function formatMoney(n) {
   return `${n}₵`;
 }
 
@@ -54,8 +55,8 @@ function renderPlayers() {
   playerAEl.classList.toggle('active', active.id === 'a');
   playerBEl.classList.toggle('active', active.id === 'b');
 
-  playerAEl.innerHTML = `<strong>${players[0].name}</strong><br>Argent: ${money(players[0].money)}<br>Terrains: ${players[0].properties.length}`;
-  playerBEl.innerHTML = `<strong>${players[1].name}</strong><br>Argent: ${money(players[1].money)}<br>Terrains: ${players[1].properties.length}`;
+  playerAEl.innerHTML = `<strong>${players[0].name}</strong><br>Argent: ${formatMoney(players[0].money)}<br>Terrains: ${players[0].properties.length}`;
+  playerBEl.innerHTML = `<strong>${players[1].name}</strong><br>Argent: ${formatMoney(players[1].money)}<br>Terrains: ${players[1].properties.length}`;
 }
 
 function tileClass(type) {
@@ -70,22 +71,22 @@ function getTileMeta(tile, index) {
   if (tile.type === 'property') {
     const owner = owners[index];
     const ownerText = owner === null ? 'Libre' : `Proprio: ${players[owner].name}`;
-    return `Prix: ${money(tile.price)} | Loyer: ${money(tile.rent)} | ${ownerText}`;
+    return `Prix: ${formatMoney(tile.price)} | Loyer: ${formatMoney(tile.rent)} | ${ownerText}`;
   }
 
   if (tile.type === 'tax') {
-    return `Taxe: ${money(tile.amount)}`;
+    return `Taxe: ${formatMoney(tile.amount)}`;
   }
 
   if (tile.type === 'special') {
-    return `Bonus: ${money(tile.amount)}`;
+    return `Bonus: ${formatMoney(tile.amount)}`;
   }
 
   if (tile.type === 'chance') {
     return 'Carte aléatoire';
   }
 
-  return `Passe = +${money(START_BONUS)}`;
+  return `Passe = +${formatMoney(START_BONUS)}`;
 }
 
 function renderBoard() {
@@ -148,13 +149,13 @@ function handleLanding(player) {
     const owner = owners[player.pos];
 
     if (owner === null) {
-      if (player.money >= tile.price + 200) {
+      if (player.money >= tile.price + MIN_RESERVE_BALANCE) {
         player.money -= tile.price;
         owners[player.pos] = players.indexOf(player);
         player.properties.push(player.pos);
-        log(`${player.name} achète ${tile.name} pour ${money(tile.price)}.`);
+        log(`${player.name} achète ${tile.name} pour ${formatMoney(tile.price)}.`);
       } else {
-        log(`${player.name} ne peut pas acheter ${tile.name}.`);
+        log(`${player.name} garde une réserve et n'achète pas ${tile.name}.`);
       }
       return;
     }
@@ -162,14 +163,14 @@ function handleLanding(player) {
     if (owner !== players.indexOf(player)) {
       player.money -= tile.rent;
       players[owner].money += tile.rent;
-      log(`${player.name} paie ${money(tile.rent)} à ${players[owner].name} pour ${tile.name}.`);
+      log(`${player.name} paie ${formatMoney(tile.rent)} à ${players[owner].name} pour ${tile.name}.`);
     }
     return;
   }
 
   if (tile.type === 'tax') {
     player.money -= tile.amount;
-    log(`${player.name} paie une taxe de ${money(tile.amount)}.`);
+    log(`${player.name} paie une taxe de ${formatMoney(tile.amount)}.`);
     return;
   }
 
@@ -180,7 +181,7 @@ function handleLanding(player) {
 
   if (tile.type === 'special') {
     player.money += tile.amount;
-    log(`${player.name} gagne un bonus de ${money(tile.amount)}.`);
+    log(`${player.name} gagne un bonus de ${formatMoney(tile.amount)}.`);
   }
 }
 
@@ -194,7 +195,7 @@ function moveCurrentPlayer() {
 
   if (player.pos < previousPos) {
     player.money += START_BONUS;
-    log(`${player.name} passe par Départ et gagne ${money(START_BONUS)}.`);
+    log(`${player.name} passe par Départ et gagne ${formatMoney(START_BONUS)}.`);
   }
 
   log(`${player.name} lance ${dice} et arrive sur ${board[player.pos].name}.`);
@@ -215,7 +216,7 @@ function moveCurrentPlayer() {
       winner = players[1];
     }
     statusEl.textContent = winner
-      ? `Fin de partie: ${winner.name} gagne avec ${money(winner.money)}.`
+      ? `Fin de partie: ${winner.name} gagne avec ${formatMoney(winner.money)}.`
       : `Fin de partie: égalité parfaite.`;
     rollBtn.disabled = true;
   } else {

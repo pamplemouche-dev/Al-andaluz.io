@@ -84,7 +84,7 @@ async function loadThreeModule() {
 
 function displaySceneLoadError() {
   statusEl.textContent = 'Impossible de charger la scène 3D pour le moment.';
-  sceneHostEl.innerHTML = '<p style="padding:12px;margin:0;color:#f85149;font-weight:700;">Erreur de chargement Three.js.</p>';
+  sceneHostEl.innerHTML = '<p class="scene-load-error">Erreur de chargement Three.js.</p>';
 }
 
 function log(message) {

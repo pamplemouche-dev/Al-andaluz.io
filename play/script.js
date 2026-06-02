@@ -20,6 +20,7 @@ const board = [
 const START_BONUS = 200;
 const MAX_TURNS = 50;
 const MIN_RESERVE_BALANCE = 200;
+const DICE_SIDES = 6;
 
 const initialPlayers = () => [
   { id: 'a', name: 'Joueur A', money: 1500, pos: 0, properties: [] },
@@ -119,7 +120,7 @@ function renderBoard() {
 }
 
 function nextTurn() {
-  turn = turn === 0 ? 1 : 0;
+  turn = (turn + 1) % players.length;
   turnsPlayed += 1;
 }
 
@@ -189,7 +190,7 @@ function moveCurrentPlayer() {
   if (gameOver) return;
 
   const player = players[turn];
-  const diceRoll = Math.floor(Math.random() * 6) + 1;
+  const diceRoll = Math.floor(Math.random() * DICE_SIDES) + 1;
   const previousPos = player.pos;
   player.pos = (player.pos + diceRoll) % board.length;
 

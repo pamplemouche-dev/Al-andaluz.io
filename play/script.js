@@ -24,6 +24,12 @@ const MAX_TURNS = 50;
 const MIN_RESERVE_BALANCE = 200;
 const DICE_SIDES = 6;
 const PATH_HALF_SIZE = 4;
+const CAMERA_POSITION = { x: 0, y: 12, z: 11.5 };
+const BOARD_ROTATION_SPEED = 0.0018;
+const DICE_ROTATION_MULTIPLIER = { x: 0.45, y: 0.65, z: 0.38 };
+const TOKEN_Y_POSITION = 0.75;
+const DICE_SIZE = 1;
+const DICE_Y_POSITION = 1.1;
 
 const initialPlayers = () => [
   { id: 'a', name: 'Joueur A', money: 1500, pos: 0, properties: [] },
@@ -141,7 +147,7 @@ function createToken(color, initialPos) {
     new THREE.SphereGeometry(0.36, 20, 20),
     new THREE.MeshStandardMaterial({ color, roughness: 0.3, metalness: 0.4 })
   );
-  token.position.set(initialPos.x, 0.75, initialPos.z);
+  token.position.set(initialPos.x, TOKEN_Y_POSITION, initialPos.z);
   return token;
 }
 
@@ -155,7 +161,7 @@ function initThreeScene() {
     0.1,
     100
   );
-  camera.position.set(0, 12, 11.5);
+  camera.position.set(CAMERA_POSITION.x, CAMERA_POSITION.y, CAMERA_POSITION.z);
   camera.lookAt(0, 0, 0);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -178,10 +184,10 @@ function initThreeScene() {
   scene.add(playerA, playerB);
 
   const dice = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.BoxGeometry(DICE_SIZE, DICE_SIZE, DICE_SIZE),
     new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.08 })
   );
-  dice.position.set(0, 1.1, 0);
+  dice.position.set(0, DICE_Y_POSITION, 0);
   scene.add(dice);
 
   sceneState.scene = scene;
@@ -192,7 +198,7 @@ function initThreeScene() {
   sceneState.diceMesh = dice;
 
   const animate = () => {
-    sceneState.boardGroup.rotation.y += 0.0018;
+    sceneState.boardGroup.rotation.y += BOARD_ROTATION_SPEED;
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   };
@@ -203,12 +209,16 @@ function setTokenPosition(player, offsetX = 0) {
   const token = sceneState.playerMeshes[player.id];
   const tile = sceneState.tilePositions[player.pos];
   if (!token || !tile) return;
-  token.position.set(tile.x + offsetX, 0.75, tile.z);
+  token.position.set(tile.x + offsetX, TOKEN_Y_POSITION, tile.z);
 }
 
 function updateDiceMesh(value) {
   if (!sceneState.diceMesh || value === null) return;
-  sceneState.diceMesh.rotation.set(value * 0.45, value * 0.65, value * 0.38);
+  sceneState.diceMesh.rotation.set(
+    value * DICE_ROTATION_MULTIPLIER.x,
+    value * DICE_ROTATION_MULTIPLIER.y,
+    value * DICE_ROTATION_MULTIPLIER.z
+  );
 }
 
 function renderThreeState() {

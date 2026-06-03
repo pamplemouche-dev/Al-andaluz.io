@@ -1,154 +1,61 @@
-:root {
-  color-scheme: dark;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #111;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
 }
 
-* {
-  box-sizing: border-box;
+#canvas-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
-body {
-  margin: 0;
-  background: #0d1117;
-  color: #f0f6fc;
+/* Style de l'overlay de chargement / erreur */
+#loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 20, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.5s ease;
 }
 
-.app {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 20px;
+.loader-content {
+    text-align: center;
 }
 
-h1,
-h2 {
-  margin: 0 0 12px;
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #333;
+    border-top: 5px solid #00ffcc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
 }
 
-.subtitle {
-  margin-top: 0;
-  color: #9fb0c2;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.hud {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+/* Classe pour afficher une erreur critique */
+.error-mode .spinner {
+    display: none;
 }
-
-.player-card {
-  border: 1px solid #30363d;
-  border-radius: 12px;
-  padding: 10px;
-  background: #161b22;
-}
-
-.player-card.active {
-  outline: 2px solid #58a6ff;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-button {
-  border: 1px solid #30363d;
-  background: #21262d;
-  color: #f0f6fc;
-  border-radius: 8px;
-  padding: 10px 14px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.status {
-  min-height: 28px;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-.scene-shell {
-  position: relative;
-  border: 1px solid #30363d;
-  border-radius: 14px;
-  background: radial-gradient(circle at 20% 20%, #1b2431, #10161f 65%);
-  min-height: 360px;
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-
-.scene3d {
-  width: 100%;
-  height: 360px;
-}
-
-.scene3d canvas {
-  display: block;
-}
-
-.scene-load-error {
-  margin: 0;
-  padding: 12px;
-  color: #f85149;
-  font-weight: 700;
-}
-
-.game-overlay {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(13, 17, 23, 0.76);
-  border: 1px solid #30363d;
-  border-radius: 12px;
-  padding: 10px 12px;
-  min-width: 210px;
-  backdrop-filter: blur(6px);
-}
-
-.overlay-title {
-  font-weight: 800;
-  margin-bottom: 8px;
-  color: #58a6ff;
-}
-
-.overlay-grid {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 4px 12px;
-  font-size: 0.95rem;
-}
-
-.log {
-  margin: 0;
-  padding-left: 18px;
-  max-height: 220px;
-  overflow-y: auto;
-  color: #c9d1d9;
-}
-
-.log li + li {
-  margin-top: 5px;
-}
-
-@media (max-width: 700px) {
-  .scene3d {
-    height: 300px;
-  }
-
-  .hud {
-    grid-template-columns: 1fr;
-  }
-
-  .game-overlay {
-    position: static;
-    margin: 10px;
-    width: calc(100% - 20px);
-  }
+.error-mode #loader-status {
+    color: #ff4a4a;
 }

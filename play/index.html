@@ -1,51 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Play - Monopoly GO</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <main class="app">
-      <h1>Monopoly GO - Mini Plateau</h1>
-      <p class="subtitle">Lance les dés, achète des terrains et bats ton adversaire.</p>
-
-      <section class="hud">
-        <div class="player-card" id="playerA"></div>
-        <div class="player-card" id="playerB"></div>
-      </section>
-
-      <section class="actions">
-        <button id="rollBtn">Lancer les dés</button>
-        <button id="restartBtn">Rejouer</button>
-      </section>
-
-      <section id="status" class="status"></section>
-
-      <section class="scene-shell" aria-label="Plateau de jeu 3D">
-        <div id="scene3d" class="scene3d"></div>
-        <div class="game-overlay">
-          <div class="overlay-title">MONOPOLY GO - Overlay</div>
-          <div class="overlay-grid">
-            <div>Tour</div>
-            <div id="overlayTurn">-</div>
-            <div>Dé</div>
-            <div id="overlayDice">-</div>
-            <div>Case</div>
-            <div id="overlayTile">-</div>
-            <div>Argent</div>
-            <div id="overlayMoney">-</div>
-          </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Andaluz - Le Jeu</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+</head>
+<body>
+    <div id="loader-overlay">
+        <div class="loader-content">
+            <h2 id="loader-status">Chargement du monde 3D...</h2>
+            <div class="spinner"></div>
         </div>
-      </section>
+    </div>
 
-      <section>
-        <h2>Journal</h2>
-        <ul id="log" class="log"></ul>
-      </section>
-    </main>
+    <div id="canvas-container"></div>
 
-    <script type="module" src="script.js"></script>
-  </body>
+    <script type="module" src="js/app.js"></script>
+</body>
 </html>

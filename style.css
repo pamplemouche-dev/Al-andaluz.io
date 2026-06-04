@@ -5,7 +5,19 @@ h1 {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;} 
-img {
-  width: 100%;
-  height: 100%;
+body {
+    /* 1. Indique le chemin de ton image */
+    background-image: url('https://lanef.net/wp-content/uploads/2019/07/Alhambra-Grenade%C2%A9AdobeStock-620x330.jpg');
+
+    /* 2. Empêche l'image de se répéter comme une mosaïque */
+    background-repeat: no-repeat;
+
+    /* 3. Centre l'image horizontalement et verticalement */
+    background-position: center center;
+
+    /* 4. Fixe l'image pour qu'elle ne défile pas avec le texte (effet parallaxe cool) */
+    background-attachment: fixed;
+
+    /* 5. Force l'image à couvrir TOUT l'écran, peu importe la taille du moniteur */
+    background-size: cover;
 }

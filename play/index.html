@@ -3,96 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Andaluz - Le Jeu</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    <title>Monopoly Go 3D</title>
+    <style>
+        /* Configuration de la page en plein écran sans marge */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #111;
+            font-family: sans-serif;
         }
-      }
-    </script>
+
+        /* Le canvas 3D prend tout l'espace disponible arrière */
+        #canvas3d {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Positionnement de l'interface du dé par-dessus la 3D */
+        #game-ui {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Style visuel de la case du Dé */
+        #de-visuel {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            color: #333;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 2px solid #ccc;
+            transition: transform 0.1s ease;
+            user-select: none;
+        }
+
+        /* Style du Bouton Lancer */
+        #btn-lancer {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(180deg, #ff4e50, #f9d423);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #d44042, 0 12px 20px rgba(0,0,0,0.4);
+            transition: all 0.1s ease;
+        }
+
+        #btn-lancer:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #d44042;
+        }
+
+        #btn-lancer:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: translateY(4px);
+        }
+    </style>
 </head>
 <body>
+
+    <canvas id="canvas3d"></canvas>
+
     <div id="game-ui">
-    <div id="de-visuel">?</div>
-    <button id="btn-lancer">LANCER LE DÉ</button>
-</div>
+        <div id="de-visuel">?</div>
+        <button id="btn-lancer" disabled>CHARGEMENT...</button>
+    </div>
 
-<style>
-    #game-ui {
-        position: absolute;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        font-family: sans-serif;
-    }
-    #de-visuel {
-        width: 80px;
-        height: 80px;
-        background-color: white;
-        color: #333;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        font-weight: bold;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        border: 2px solid #ccc;
-        transition: transform 0.1s ease;
-    }
-    #btn-lancer {
-        padding: 15px 30px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: white;
-        background: linear-gradient(180deg, #ff4e50, #f9d423);
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        box-shadow: 0 6px 0 #d44042, 0 12px 20px rgba(0,0,0,0.4);
-    }
-    #btn-lancer:active {
-        transform: translateY(4px);
-        box-shadow: 0 2px 0 #d44042;
-    }
-</style>
+    <script type="module">
+        import { Application } from 'https://unpkg.com/@splinetool/runtime@1.9.0/build/runtime.js';
 
-<script>
-    const btnLancer = document.getElementById('btn-lancer');
-    const deVisuel = document.getElementById('de-visuel');
+        const canvas = document.getElementById('canvas3d');
+        const spline = new Application(canvas);
+        
+        let positionActuelle = 0;
+        // Indique ici le nombre total d'états (cases) de ton plateau
+        const totalCases = 22; 
 
-    btnLancer.addEventListener('click', () => {
-        btnLancer.disabled = true;
-
-        // Animation rapide du dé
-        const intervalle = setInterval(() => {
-            deVisuel.innerText = Math.floor(Math.random() * 6) + 1;
-            deVisuel.style.transform = `rotate(${Math.random() * 20 - 10}deg) scale(1.1)`;
-        }, 50);
-
-        // Résultat final après 500ms
-        setTimeout(() => {
-            clearInterval(intervalle);
+        // Rentre ici l'URL absolue de ton fichier exporté dans l'onglet Vanilla JS de Spline
+        spline.load('TON_LIEN_EXPORTE_DE_SPLINE.splinecode').then(() => {
+            console.log("Scène 3D chargée !");
             
-            const resultatFinal = Math.floor(Math.random() * 6) + 1;
-            deVisuel.innerText = resultatFinal;
-            deVisuel.style.transform = "rotate(0deg) scale(1)";
+            const btnLancer = document.getElementById('btn-lancer');
+            const deVisuel = document.getElementById('de-visuel');
+            
+            // On active le bouton une fois que le jeu 3D est bien prêt
+            btnLancer.innerText = "LANCER LE DÉ";
             btnLancer.disabled = false;
 
-            // La variable 'resultatFinal' contient le chiffre (1 à 6)
-            console.log("Résultat : " + resultatFinal);
-            
-            // Reçois ce résultat ici pour déclencher ton code Spline
-        }, 500);
-    });
-</script>
+            btnLancer.addEventListener('click', () => {
+                btnLancer.disabled = true;
+
+                // Animation de secousse et défilement rapide des chiffres du dé
+                const intervalle = setInterval(() => {
+                    deVisuel.innerText = Math.floor(Math.random() * 6) + 1;
+                    deVisuel.style.transform = `rotate(${Math.random() * 20 - 10}deg) scale(1.1)`;
+                }, 50);
+
+                // Arrêt de l'animation et application du résultat après 500ms
+                setTimeout(() => {
+                    clearInterval(intervalle);
+                    
+                    const resultatFinal = Math.floor(Math.random() * 6) + 1;
+                    deVisuel.innerText = resultatFinal;
+                    deVisuel.style.transform = "rotate(0deg) scale(1)";
+                    btnLancer.disabled = false;
+
+                    // Calcul du nouvel index pour l'état (State) de destination
+                    positionActuelle = (positionActuelle + resultatFinal) % totalCases;
+                    if (positionActuelle === 0) positionActuelle = 1; 
+
+                    console.log("Résultat : " + resultatFinal + " | Destination : State " + positionActuelle);
+                    
+                    // Envoi de la donnée à la variable de la scène Spline
+                    spline.setVariable('caseActuelle', positionActuelle);
+                    
+                    // Activation du mouvement du personnage vers le State correspondant
+                    const pion = spline.findObjectByName('Pion_Joueur');
+                    if (pion) {
+                        pion.emitEvent('transition', `State ${positionActuelle}`);
+                    } else {
+                        console.error("Le Pion_Joueur n'a pas été trouvé dans la scène.");
+                    }
+
+                }, 500);
+            });
+        }).catch(err => {
+            console.error("Erreur lors du chargement de la scène Spline :", err);
+        });
+    </script>
 </body>
 </html>

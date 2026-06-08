@@ -27,11 +27,16 @@ boutonValider.addEventListener("click", () => {
     } else {
         alert("Mauvaise réponse... La réponse était Paris.");
     }
+     const numeroQuestion = Math.floor(Math.random() * 20) + 1;
+                
+                // Affichage du chiffre final
+                de.innerText = numeroQuestion;
+                message.innerText = `Direction la question ${numeroQuestion} !`;
 
-    // 5. Redirection vers la page suivante après 1,5 seconde
-    setTimeout(() => {
-        window.location.href = "question2.html";
-    }, 1500);
+                // Redirection vers ta page HTML après 1 seconde
+                setTimeout(() => {
+                    window.location.href = `pregunta/pregunta${numeroQuestion}.html`;
+                }, 1000);
 });</script>
   </body>
 </html>

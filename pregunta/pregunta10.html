@@ -27,7 +27,7 @@ boutonValider.addEventListener("click", () => {
     } else {
         alert("Mauvaise réponse... La réponse était Paris.");
     }
-
+const numeroQuestion = Math.floor(Math.random() * 20) + 1;
     // 5. Redirection vers la page suivante après 1,5 seconde
     setTimeout(() => {
         window.location.href = "question2.html";

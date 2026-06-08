@@ -10,6 +10,7 @@
 <button id="valider-btn">Valider</button>
 
 <script >// 1. Définir la bonne réponse (en minuscules pour faciliter la vérification)
+  // 1. Définir la bonne réponse
 const bonneReponse = "paris";
 
 // 2. Sélectionner les éléments HTML
@@ -18,7 +19,7 @@ const champSaisie = document.getElementById("reponse-utilisateur");
 
 // 3. Écouter le clic sur le bouton Valider
 boutonValider.addEventListener("click", () => {
-    // Récupérer la valeur, enlever les espaces inutiles et mettre en minuscules
+    // Récupérer la valeur et la nettoyer
     const reponseTapee = champSaisie.value.trim().toLowerCase();
 
     // 4. Vérifier si la réponse est correcte
@@ -27,8 +28,13 @@ boutonValider.addEventListener("click", () => {
     } else {
         alert("Mauvaise réponse... La réponse était Paris.");
     }
-     const numeroQuestion = Math.floor(Math.random() * 20) + 1;
-          window.location.href = `pregunta/pregunta${numeroQuestion}.html`;
-});</script>
+
+    // 5. Choisir un numéro aléatoire entre 1 et 20
+    const numeroQuestion = Math.floor(Math.random() * 20) + 1;
+    
+    // 6. Redirection directe vers le fichier (puisqu'ils sont dans le même dossier)
+    window.location.href = `pregunta${numeroQuestion}.html`;
+});
+</script>
   </body>
 </html>

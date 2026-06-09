@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>al-andaluz.io</title>
+    <title>Al-Andaluz.io</title>
     <link rel="stylesheet" href="style.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,16 +12,29 @@
 </head>
 <body>
 
-    <nav>
-        <h1>Al-Andaluz.<b>IO</b></h1>
-        <h2>Descubrir Al-Andaluz a través de un juego hecho por Noam DA SILVA, Léo Dehaye y Louis Dusart 3B</h2>
-        <button type="button" class="btn-empezar" onclick="location.href='/play'" value="Empezar">Empezar</button>
-    </nav>
+    <div class="game-container">
+        
+        <nav class="main-card">
+            <h1 class="game-title">Al-Andaluz.<span>IO</span></h1>
+            <h2 class="game-subtitle">
+                Descubrir Al-Andaluz a través de un juego hecho por 
+                <span class="highlight">Noam DA SILVA</span>, 
+                <span class="highlight">Léo Dehaye</span> y 
+                <span class="highlight">Louis Dusart 3B</span>
+            </h2>
+            
+            <button type="button" class="btn-play" onclick="location.href='/play'">
+                EMPEZAR
+            </button>
+        </nav>
 
-    <footer>
-        <p>Noam DA SILVA 3B, Leo DEHAYE 3B y Louis DUSART 3B</p>
-        <p>2025-2026</p>
-        <p><strong>Al-Andaluz.IO™</strong></p>
+    </div>
+
+    <footer class="game-footer">
+        <div class="footer-content">
+            <p>Créditos: Noam DA SILVA 3B, Leo DEHAYE 3B y Louis DUSART 3B</p>
+            <p class="year">2025-2026 — <strong>Al-Andaluz.IO™</strong></p>
+        </div>
     </footer>
 
 </body>

@@ -1,1 +1,85 @@
+/* --- Styles généraux --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fa;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
 
+/* --- Conteneur principal (à ajouter idéalement autour de vos éléments dans le HTML) --- */
+/* Si vous n'avez pas de conteneur, ces styles s'appliqueront bien aussi */
+.container {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+}
+
+/* --- Titre --- */
+h1, .titulo {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+}
+
+/* --- Formulaire / Alignement --- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* --- Champ de saisie (input) --- */
+input[type="text"], input[type="search"], .input-respuesta {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Effet au clic sur le champ de saisie */
+input[type="text"]:focus, input[type="search"]:focus {
+    border-color: #4a90e2;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+/* --- Bouton Valider --- */
+input[type="submit"], button, .btn-valider {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #4a90e2;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Effet au survol du bouton */
+input[type="submit"]:hover, button:hover {
+    background-color: #357abd;
+}
+
+/* Effet au clic sur le bouton */
+input[type="submit"]:active, button:active {
+    transform: scale(0.98);
+}

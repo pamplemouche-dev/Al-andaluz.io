@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h2 id="question">¿Que lengua se habla en al Andalus?</h2>
+    <h2 id="question">¿Que lenguas se hablan en Al-Andalus?</h2>
 
 <input type="text" id="reponse-utilisateur" placeholder="Votre réponse ici...">
 <button id="valider-btn">Valider</button>
@@ -83,7 +83,7 @@ body {
 </style>
 <script >// 1. Définir la bonne réponse (en minuscules pour faciliter la vérification)
   // 1. Définir la bonne réponse
-const bonneReponse = "Se habla el español";
+const bonneReponse = "Se habla el español y arabe";
 
 // 2. Sélectionner les éléments HTML
 const boutonValider = document.getElementById("valider-btn");
@@ -98,7 +98,7 @@ boutonValider.addEventListener("click", () => {
     if (reponseTapee === bonneReponse) {
         alert("Buena respuesta !");
     } else {
-        alert("falsa respuesta... La respuesta era se habla el español.");
+        alert("falsa respuesta... La respuesta era se habla el español y arabe.");
     }
 
     // 5. Choisir un numéro aléatoire entre 1 et 20

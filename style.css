@@ -1,23 +1,114 @@
-h1 {
-  font-family: "Saira Stencil", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;} 
+/* ==========================================
+   1. RESET ET CONFIGURATION DE L'ÉCRAN
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Force la page à occuper 100% de la hauteur de l'écran (évite les bugs sur tablette) */
+html, body {
+    height: 100%;
+}
+
 body {
-    /* 1. Indique le chemin de ton image */
-    background-image: url('https://lanef.net/wp-content/uploads/2019/07/Alhambra-Grenade%C2%A9AdobeStock-620x330.jpg');
-
-    /* 2. Empêche l'image de se répéter comme une mosaïque */
+    /* Flexbox vertical pour isoler la zone principale (nav) et le footer */
+    display: flex;
+    flex-direction: column;
+    
+    /* Image de fond (ton lien actuel) avec un dégradé sombre intégré pour rendre le texte blanc très lisible */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), 
+                      url('https://lanef.net/wp-content/uploads/2019/07/Alhambra-Grenade%C2%A9AdobeStock-620x330.jpg');
     background-repeat: no-repeat;
-
-    /* 3. Centre l'image horizontalement et verticalement */
     background-position: center center;
-
-    /* 4. Fixe l'image pour qu'elle ne défile pas avec le texte (effet parallaxe cool) */
     background-attachment: fixed;
-
-    /* 5. Force l'image à couvrir TOUT l'écran, peu importe la taille du moniteur */
     background-size: cover;
+
+    color: #ffffff;
+    font-family: 'Saira Stencil One', sans-serif;
+}
+
+/* ==========================================
+   2. ZONE CENTRALE (CONTENU PRINCIPAL)
+   ========================================== */
+nav {
+    flex: 1; /* Remplit tout l'espace libre disponible, ce qui pousse automatiquement le footer en bas */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre les éléments verticalement */
+    align-items: center;     /* Centre les éléments horizontalement */
+    text-align: center;
+    padding: 30px;
+}
+
+/* Style de ton titre principal */
+h1 {
+    font-family: 'Saira Stencil One', sans-serif;
+    font-size: 4rem;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.85);
+    letter-spacing: 2px;
+}
+
+/* Met le "IO" en orange pour donner du style */
+h1 b {
+    color: #e67e22; 
+}
+
+/* Style du sous-titre */
+h2 {
+    font-family: Arial, sans-serif; /* Une police plus lisse pour les longs textes */
+    font-size: 1.4rem;
+    font-weight: normal;
+    max-width: 850px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+    line-height: 1.5;
+}
+
+/* ==========================================
+   3. DESIGN DU BOUTON "EMPEZAR"
+   ========================================== */
+.btn-empezar {
+    font-family: 'Saira Stencil One', sans-serif;
+    background-color: #e67e22; /* Orange andalou */
+    color: white;
+    border: none;
+    padding: 15px 45px;
+    font-size: 1.3rem;
+    border-radius: 30px; /* Bouton arrondi moderne */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Animation fluide au survol */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Effet quand on passe la souris ou qu'on clique dessus */
+.btn-empezar:hover {
+    background-color: #d35400; /* Orange plus foncé */
+    transform: translateY(-3px); /* Le bouton se soulève légèrement */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================
+   4. LE FOOTER (BLOQUÉ EN BAS)
+   ========================================== */
+footer {
+    background-color: rgba(0, 0, 0, 0.85); /* Fond noir transparent très propre */
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer p {
+    margin: 5px 0;
+    opacity: 0.8; /* Légèrement transparent pour plus de discrétion */
+}
+
+footer strong {
+    color: #e67e22;
+    opacity: 1;
 }

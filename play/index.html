@@ -79,7 +79,7 @@
             // Effet visuel : fait défiler des chiffres très vite (faux suspense)
             let compteur = 0;
             const intervalle = setInterval(() => {
-                const chiffreTemporaire = Math.floor(Math.random() * 20) + 1;
+                const chiffreTemporaire = Math.floor(Math.random() * 15) + 1;
                 de.innerText = chiffreTemporaire;
                 compteur++;
                 
@@ -93,7 +93,7 @@
                 de.classList.remove("lancer");
 
                 // Calcul du vrai chiffre final entre 1 et 20
-                const numeroQuestion = Math.floor(Math.random() * 20) + 1;
+                const numeroQuestion = Math.floor(Math.random() * 15) + 1;
                 
                 // Affichage du chiffre final
                 de.innerText = numeroQuestion;

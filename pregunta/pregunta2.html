@@ -8,7 +8,79 @@
 
 <input type="text" id="reponse-utilisateur" placeholder="Votre réponse ici...">
 <button id="valider-btn">Valider</button>
+<style>
+  /* --- Styles généraux (communs aux 15 pages) --- */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f4f7f6;
+    color: #2c3e50;
+    margin: 0;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
 
+/* --- Le Titre / La question --- */
+#question, h2, .question-titre {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-align: center;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+}
+
+/* --- Le Champ de saisie (input) --- */
+#reponse-utilisateur, input[type="text"], .input-quiz {
+    width: 100%;
+    max-width: 380px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    margin-bottom: 1.2rem;
+    outline: none;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+}
+
+/* Effet focus pour toutes les pages */
+#reponse-utilisateur:focus, input[type="text"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* --- Le Bouton Valider --- */
+#valider-btn, button, .btn-quiz {
+    width: 100%;
+    max-width: 380px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-sizing: border-box;
+}
+
+/* Effet survol global */
+#valider-btn:hover, button:hover {
+    background-color: #2563eb;
+}
+
+/* Effet clic global */
+#valider-btn:active, button:active {
+    transform: scale(0.98);
+}
+</style>
 <script >// 1. Définir la bonne réponse (en minuscules pour faciliter la vérification)
   // 1. Définir la bonne réponse
 const bonneReponse = "711";

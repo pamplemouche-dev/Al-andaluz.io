@@ -1,56 +1,58 @@
 /* --- Styles généraux --- */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f7f9fa;
-    color: #333333;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f4f7f6;
+    color: #2c3e50;
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    box-sizing: border-box;
 }
 
-/* --- Titre --- */
-h2 {
-    font-size: 1.8rem;
-    color: #1a1a1a;
+/* --- Le Titre (La question) --- */
+#question {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-align: center;
+    max-width: 600px;
     margin-bottom: 2rem;
+    padding: 0 1rem;
     line-height: 1.4;
 }
 
-
-
-
-/* --- Champ de saisie (input) --- */
-input[type="text"], input[type="search"], .input-respuesta {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 16px;
+/* --- Le Champ de saisie (input) --- */
+#reponse-utilisateur {
+    width: 85%;
+    max-width: 380px;
+    padding: 14px 16px;
     font-size: 1rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #cbd5e1;
     border-radius: 8px;
-    background-color: #fcfcfc;
-    transition: all 0.3s ease;
-    outline: none;
-}
-
-/* Effet au clic sur le champ de saisie */
-input[type="text"]:focus, input[type="search"]:focus {
-    border-color: #4a90e2;
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+    margin-bottom: 1rem;
+    outline: none;
+    transition: all 0.25s ease;
 }
 
-/* --- Bouton Valider --- */
-input[type="submit"], button, .btn-valider {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 24px;
+/* Effet quand on clique dans le champ de saisie */
+#reponse-utilisateur:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* --- Le Bouton Valider --- */
+#valider-btn {
+    width: 85%;
+    max-width: 380px;
+    padding: 14px;
     font-size: 1rem;
     font-weight: 600;
     color: #ffffff;
-    background-color: #4a90e2;
+    background-color: #3b82f6;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -58,11 +60,11 @@ input[type="submit"], button, .btn-valider {
 }
 
 /* Effet au survol du bouton */
-input[type="submit"]:hover, button:hover {
-    background-color: #357abd;
+#valider-btn:hover {
+    background-color: #2563eb;
 }
 
 /* Effet au clic sur le bouton */
-input[type="submit"]:active, button:active {
+#valider-btn:active {
     transform: scale(0.98);
 }

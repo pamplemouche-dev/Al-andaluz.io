@@ -12,20 +12,15 @@ body {
 }
 
 /* --- Titre --- */
-h1, .titulo {
+h2 {
     font-size: 1.8rem;
     color: #1a1a1a;
     margin-bottom: 2rem;
     line-height: 1.4;
 }
 
-/* --- Formulaire / Alignement --- */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-}
+
+
 
 /* --- Champ de saisie (input) --- */
 input[type="text"], input[type="search"], .input-respuesta {
